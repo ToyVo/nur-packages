@@ -29,9 +29,9 @@ jobs:
       uses: actions/checkout@v4
     - name: Install nix
       uses: cachix/install-nix-action@v30
-      with:
-        nix_path: "${{ matrix.nixPath }}"
-        extra_nix_config: access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+      # with:
+      #   nix_path: "${{ matrix.nixPath }}"
+      #   extra_nix_config: access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
     # - name: Show nixpkgs version
     #   run: nix-instantiate --eval -E '(import <nixpkgs> {}).lib.version'
     - name: Setup cachix
