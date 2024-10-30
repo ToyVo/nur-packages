@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - master
   schedule:
     # rebuild everyday at 7:30
     # TIP: Choose a random time here so not all repositories are build at once:
@@ -15,6 +14,11 @@ jobs:
   tests:
     strategy:
       matrix:
+        runner:
+          - ubuntu-latest
+          - [self-hosted, linux, ARM64]
+          - [self-hosted, macOS, ARM64]
+          - [self-hosted, macOS, x64]
         # Set this to notify the global nur package registry that changes are
         # available.
         #
@@ -38,7 +42,7 @@ jobs:
           - nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/heads/nixpkgs-unstable.tar.gz
           - nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/heads/nixos-unstable.tar.gz
           - nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/heads/nixos-24.05.tar.gz
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
