@@ -15,6 +15,7 @@
   overlays = import ./overlays; # nixpkgs overlays
 
   oracle-cloud-agent = pkgs.callPackage ./pkgs/oracle-cloud-agent { };
+  nh_plus = pkgs.callPackage ./pkgs/nh_plus { };
   # some-qt5-package = pkgs.libsForQt5.callPackage ./pkgs/some-qt5-package { };
   # ...
 }
