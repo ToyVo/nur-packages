@@ -11,6 +11,7 @@
   nix-output-monitor,
 }:
 let
+  rustcMinor = lib.strings.toInt (builtins.elemAt (lib.strings.splitString "." pkgs.rustc.version) 1);
   version = "3.6.0-0";
   runtimeDeps = [
     nvd
@@ -60,6 +61,7 @@ rustPlatform.buildRustPackage {
     homepage = "https://github.com/ToyVo/nh_plus";
     license = lib.licenses.eupl12;
     mainProgram = "nh";
+    broken = rustcMinor < 80;
     maintainers = with lib.maintainers; [
       {
         name = "Collin Diekvoss";
