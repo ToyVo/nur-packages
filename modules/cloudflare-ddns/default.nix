@@ -5,11 +5,11 @@
   ...
 }:
 let
-  cfg = config.cloudflare-ddns;
+  cfg = config.services.cloudflare-ddns;
   cloudflare-ddns = pkgs.callPackage ../pkgs/cloudflare-ddns { };
 in
 {
-  options.cloudflare-ddns = {
+  options.services.cloudflare-ddns = {
     enable = lib.mkEnableOption "enable cloudflare ddns";
     records = lib.mkOption {
       type = lib.types.listOf lib.types.string;
