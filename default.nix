@@ -16,8 +16,9 @@
   modules = import ./modules; # NixOS modules
   overlays = import ./overlays; # nixpkgs overlays
 
-  oracle-cloud-agent = pkgs.callPackage ./pkgs/oracle-cloud-agent { };
+  cloudflare-ddns = pkgs.callPackage ./pkgs/cloudflare-ddns { };
   nh_plus = pkgs.callPackage ./pkgs/nh_plus { };
+  oracle-cloud-agent = pkgs.callPackage ./pkgs/oracle-cloud-agent { };
   # some-qt5-package = pkgs.libsForQt5.callPackage ./pkgs/some-qt5-package { };
   # ...
 }

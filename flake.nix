@@ -34,5 +34,6 @@
         in
         pkgs.nixfmt-rfc-style
       );
+      nixosModules = import ./modules;
     };
 }
