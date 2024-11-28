@@ -1,17 +1,18 @@
 {
-  stdenv,
-  lib,
-  rustPlatform,
-  installShellFiles,
-  makeBinaryWrapper,
   darwin,
   fetchFromGitHub,
+  installShellFiles,
+  lib,
+  makeBinaryWrapper,
+  nix-output-monitor,
   nix-update-script,
   nvd,
-  nix-output-monitor,
+  rustPlatform,
+  rustc,
+  stdenv,
 }:
 let
-  rustcMinor = lib.strings.toInt (builtins.elemAt (lib.strings.splitString "." pkgs.rustc.version) 1);
+  rustcMinor = lib.strings.toInt (builtins.elemAt (lib.strings.splitString "." rustc.version) 1);
   version = "3.6.0-0";
   runtimeDeps = [
     nvd
