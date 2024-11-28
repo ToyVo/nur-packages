@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.services.cloudflare-ddns;
-  cloudflare-ddns = pkgs.callPackage ../pkgs/cloudflare-ddns { };
+  cloudflare-ddns = pkgs.callPackage ../../pkgs/cloudflare-ddns { };
 in
 {
   options.services.cloudflare-ddns = {
