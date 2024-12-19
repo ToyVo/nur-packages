@@ -1,11 +1,11 @@
 {
-  writeScriptbin,
+  writeScriptBin,
   python3,
 }:
 let
   py = python3.withPackages (p: with p; [ tinytag ]);
 in
-writeScriptbin "rename_music" ''
+writeScriptBin "rename_music" ''
 #!${py}/bin/python
 import tinytag
 import sys
