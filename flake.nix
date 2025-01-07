@@ -6,7 +6,7 @@
     "nixos-24.11".url = "github:NixOS/nixpkgs/nixos-24.11";
   };
   outputs =
-    { self, nixpkgs-unstable, ... }:
+    inputs@{ self, nixpkgs-unstable, ... }:
     let
       lib = nixpkgs-unstable.lib;
       systems = [
@@ -16,6 +16,7 @@
         "x86_64-linux"
       ];
       forAllSystems = f: lib.genAttrs systems (system: f system);
+      forAllBranches = f: lib.genAttrs (builtins.attrNames inputs) (branch: f inputs.${branch});
     in
     {
       legacyPackages = forAllSystems (
@@ -25,7 +26,17 @@
         }
       );
       packages = forAllSystems (
-        system: lib.filterAttrs (_: v: lib.isDerivation v) self.legacyPackages.${system}
+        system: lib.filterAttrs (_: v: lib.isDerivation v) self.legacyPackages.${system} // {
+          ci = forAllBranches (
+            nixpkgs: let
+              pkgs = import nixpkgs { inherit system; };
+            in {
+              nixpkgs-version = pkgs.writeShellScriptBin "nixpkgs-version" ''
+                echo "${pkgs.lib.version}"
+              '';
+            }
+          );
+        }
       );
       formatter = forAllSystems (
         system:

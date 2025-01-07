@@ -16,13 +16,13 @@ jobs:
       matrix:
         runner:
           - ubuntu-latest
-          # - [self-hosted, linux, ARM64]
-          # - [self-hosted, macOS, ARM64]
-          # - [self-hosted, macOS, x64]
-        nixPath:
-          - nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/heads/nixpkgs-unstable.tar.gz
-          - nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/heads/nixos-unstable.tar.gz
-          - nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/heads/nixos-24.11.tar.gz
+          - [self-hosted, linux, ARM64]
+          - [self-hosted, macOS, ARM64]
+          - [self-hosted, macOS, x64]
+        nixBranch:
+          - nixpkgs-unstable
+          - nixos-unstable
+          - nixos-24.11
     runs-on: ${{ matrix.runner }}
     steps:
     - name: Checkout repository
@@ -30,10 +30,10 @@ jobs:
     - name: Install nix
       uses: cachix/install-nix-action@v30
       with:
-        nix_path: "${{ matrix.nixPath }}"
+        nix_path: "nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/heads/${{ matrix.nixBranch }}.tar.gz"
         extra_nix_config: access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
     - name: Show nixpkgs version
-      run: nix-instantiate --eval -E '(import <nixpkgs> {}).lib.version'
+      run: nix run .#ci.${{ matrix.nixBranch }}.nixpkgs-version
     - name: Setup cachix
       uses: cachix/cachix-action@v15
       with:
