@@ -45,7 +45,7 @@ jobs:
           --allowed-uris https://static.rust-lang.org \
           --option allow-import-from-derivation true \
           --drv-path --show-trace \
-          -I nixpkgs=$(nix-instantiate --find-file nixpkgs) \
+          -I nixpkgs=$(NIX_PATH="${{ matrix.nixPath }}" nix-instantiate --find-file nixpkgs) \
           -I $PWD
     - name: Build nix packages
       run: NIX_PATH="${{ matrix.nixPath }}" nix shell -f '<nixpkgs>' nix-build-uncached -c nix-build-uncached ci.nix -A cacheOutputs
