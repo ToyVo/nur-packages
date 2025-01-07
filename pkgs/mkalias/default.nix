@@ -15,15 +15,15 @@ let
     rev = "v${version}";
     inherit sha256;
   };
-  info = lib.importTOML "${src}/Cargo.toml";
 in
 rustPlatform.buildRustPackage {
   inherit pname src version cargoHash;
   buildInputs = [ darwin.apple_sdk.frameworks.CoreFoundation];
   meta = with lib; {
-    description = info.package.description;
-    homepage = info.package.repository;
+    description = "A simple command-line tool to create Finder aliases";
+    homepage = "https://github.com/reckenrode/mkalias";
     license = licenses.gpl3Only;
     platforms = platforms.darwin;
+    mainProgram = pname;
   };
 }
