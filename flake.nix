@@ -1,14 +1,12 @@
 {
   description = "My personal NUR repository";
   inputs = {
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-    "nixos-24.11".url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   };
   outputs =
-    inputs@{ self, nixpkgs-unstable, ... }:
+    inputs@{ self, nixpkgs, ... }:
     let
-      lib = nixpkgs-unstable.lib;
+      lib = nixpkgs.lib;
       systems = [
         "aarch64-darwin"
         "aarch64-linux"
@@ -22,7 +20,7 @@
       legacyPackages = forAllSystems (
         system:
         import ./default.nix {
-          pkgs = import nixpkgs-unstable { inherit system; };
+          pkgs = import nixpkgs { inherit system; };
         }
       );
       packages = forAllSystems (
@@ -41,7 +39,7 @@
       formatter = forAllSystems (
         system:
         let
-          pkgs = import nixpkgs-unstable { inherit system; };
+          pkgs = import nixpkgs { inherit system; };
         in
         pkgs.nixfmt-rfc-style
       );
