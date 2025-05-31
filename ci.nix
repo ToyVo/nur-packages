@@ -9,12 +9,10 @@
 # then your CI will be able to build and cache only those packages for
 # which this is possible.
 
-{
-  pkgs ? import <nixpkgs> { },
-}:
-
 with builtins;
 let
+  outputs = getFlake (toString ./.);
+  pkgs = import outputs.inputs.nixpkgs {};
   isReserved = n: n == "lib" || n == "overlays" || n == "modules";
   isDerivation = p: isAttrs p && p ? type && p.type == "derivation";
   isBuildable =
@@ -50,7 +48,7 @@ let
 
   outputsOf = p: map (o: p.${o}) p.outputs;
 
-  nurAttrs = import ./default.nix { inherit pkgs; };
+  nurAttrs = outputs.packages.${pkgs.stdenv.system};
 
   nurPkgs = flattenPkgs (
     listToAttrs (

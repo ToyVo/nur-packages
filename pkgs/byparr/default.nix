@@ -5,9 +5,9 @@
   makeWrapper,
   stdenv,
   python3,
-  pyproject-build-systems,
   pyproject-nix,
   uv2nix,
+  pyproject-build-systems,
   version ? "1.2.0",
   hash ? "sha256-tn3aynOEd8DD0ymidMMfMSflpJL6mvJxp+2TPr2IVcw=",
   venvIgnoreCollisions ? [
