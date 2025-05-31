@@ -1,10 +1,27 @@
 {
   description = "My personal NUR repository";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    pyproject-nix = {
+      url = "github:pyproject-nix/pyproject.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    uv2nix = {
+      url = "github:pyproject-nix/uv2nix";
+      inputs.pyproject-nix.follows = "pyproject-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    pyproject-build-systems = {
+      url = "github:pyproject-nix/build-system-pkgs";
+      inputs.pyproject-nix.follows = "pyproject-nix";
+      inputs.uv2nix.follows = "uv2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
 
   outputs =
-    { self, nixpkgs, ... }:
+    { self, nixpkgs, pyproject-nix, uv2nix, pyproject-build-systems, ... }:
     let
       lib = nixpkgs.lib;
       systems = [
@@ -20,6 +37,7 @@
         system:
         import ./default.nix {
           pkgs = import nixpkgs { inherit system; };
+          inherit pyproject-nix uv2nix pyproject-build-systems;
         }
       );
       packages = forAllSystems (
