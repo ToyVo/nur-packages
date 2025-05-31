@@ -10,6 +10,9 @@ on:
     # https://www.random.org/clock-times/?num=1&earliest=01%3A00&latest=08%3A00&interval=5&format=html&rnd=new
     - cron:  '30 7 * * *'
   workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -20,6 +23,14 @@ jobs:
       uses: cachix/install-nix-action@v31
       with:
         extra_nix_config: access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+    - name: Update flake.lock
+      uses: DeterminateSystems/update-flake-lock@main
+      id: update-flake-lock
+      with:
+        pr-title: "Update Nix flake inputs"
+        pr-labels: |
+          dependencies
+          automated
     - name: Show nixpkgs version
       run: nix-instantiate --eval -E '(builtins.getFlake (builtins.toString ./.)).inputs.nixpkgs.lib.version'
     - name: Setup cachix
@@ -33,3 +44,5 @@ jobs:
       run: nix run nixpkgs#nix-build-uncached -- ci.nix -A cacheOutputs
     - name: Trigger NUR update
       run: curl -XPOST "https://nur-update.nix-community.org/update?repo=https://github.com/ToyVo/nur-packages"
+    - name: Merge flake.lock
+      run: "gh pr merge --auto --merge ${{ steps.update-flake-lock.outputs.pull-request-number }}"
