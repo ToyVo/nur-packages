@@ -47,3 +47,5 @@ jobs:
       run: curl -XPOST "https://nur-update.nix-community.org/update?repo=https://github.com/ToyVo/nur-packages"
     - name: Merge flake.lock
       run: "gh pr merge --auto --merge ${{ steps.update-flake-lock.outputs.pull-request-number }}"
+      env:
+        GH_TOKEN: ${{ github.token }}
