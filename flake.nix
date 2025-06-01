@@ -42,11 +42,10 @@
         "x86_64-darwin"
         "x86_64-linux"
       ];
-      perSystem = { config, pkgs, lib, ... }: {
+      perSystem = { config, pkgs, lib, self', ... }: {
         packages = {
-          nh = pkgs.callPackage ./pkgs/nh { };
-          rename_music = pkgs.callPackage ./pkgs/rename_music { };
-          byparr = pkgs.callPackage ./pkgs/byparr {
+          nh = pkgs.callPackage ./pkgs/nh.nix { };
+          byparr = pkgs.callPackage ./pkgs/byparr.nix {
             inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
           };
           catppuccin-papirus-folders-frappe-red = pkgs.catppuccin-papirus-folders.override {
@@ -77,6 +76,15 @@
             winDecStyles = [ "classic" ];
           };
         };
+        checks = let
+          isCacheable =
+            p:
+            let
+              licenseFromMeta = p.meta.license or [ ];
+              licenseList = if builtins.isList licenseFromMeta then licenseFromMeta else [ licenseFromMeta ];
+            in
+            !(p.meta.broken or false) && !(p.preferLocalBuild or false) && builtins.all (license: license.free or true) licenseList;
+          in lib.mapAttrs' (n: lib.nameValuePair "package-${n}") (lib.filterAttrs (n: v: isCacheable v) self'.packages);
         formatter = pkgs.nixfmt-rfc-style;
       };
     };
