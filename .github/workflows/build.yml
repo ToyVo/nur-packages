@@ -15,7 +15,7 @@ permissions:
   issues: write
   pull-requests: write
 jobs:
-  tests:
+  Build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -37,6 +37,7 @@ jobs:
     - name: Trigger NUR update
       run: curl -XPOST "https://nur-update.nix-community.org/update?repo=https://github.com/ToyVo/nur-packages"
     - name: Merge flake.lock
+      if: steps.update-flake-lock.outputs.pull-request-number != ''
       run: "gh pr merge --auto --squash ${{ steps.update-flake-lock.outputs.pull-request-number }}"
       env:
         GH_TOKEN: ${{ github.token }}
