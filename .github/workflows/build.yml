@@ -30,10 +30,6 @@ jobs:
         pr-labels: |
           dependencies
           automated
-    - name: Show nixpkgs version
-      run: nix-instantiate --eval -E '(builtins.getFlake (builtins.toString ./.)).inputs.nixpkgs.lib.version'
-    - name: Check evaluation
-      run: nix flake show --option allow-import-from-derivation true
     - name: Build nix packages
       run: nix run nixpkgs#nix-fast-build -- --skip-cached --no-nom --flake ".#checks.$(nix eval --raw --impure --expr builtins.currentSystem)" --cachix-cache toyvo --option accept-flake-config true
       env:
