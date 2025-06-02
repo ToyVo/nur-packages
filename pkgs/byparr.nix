@@ -5,9 +5,9 @@
   makeWrapper,
   stdenv,
   python3,
-  pyproject-build-systems,
   pyproject-nix,
   uv2nix,
+  pyproject-build-systems,
   version ? "1.2.0",
   hash ? "sha256-tn3aynOEd8DD0ymidMMfMSflpJL6mvJxp+2TPr2IVcw=",
   venvIgnoreCollisions ? [
@@ -37,17 +37,16 @@ let
 
   workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = src; };
 
-  pyprojectOverrides = _final: prev: builtins.listToAttrs (
-    builtins.map (
-      pkg: {
+  pyprojectOverrides =
+    _final: prev:
+    builtins.listToAttrs (
+      builtins.map (pkg: {
         name = pkg;
         value = prev.${pkg}.overrideAttrs (old: {
           buildInputs = (old.buildInputs or [ ]) ++ [ prev.setuptools ];
         });
-      }
-    )
-    dependenciesToAddSetuptoolsTo
-  );
+      }) dependenciesToAddSetuptoolsTo
+    );
 
   # Construct package set
   pythonSet =
@@ -57,7 +56,7 @@ let
     }).overrideScope
       (
         lib.composeManyExtensions [
-          pyproject-build-systems.overlays.default
+          (pyproject-build-systems.overlays.default or pyproject-build-systems.default)
           (workspace.mkPyprojectOverlay { sourcePreference = "wheel"; })
           pyprojectOverrides
         ]
@@ -65,9 +64,11 @@ let
 
   thisProjectAsNixPkg = pythonSet.byparr;
 
-  pythonEnv = (pythonSet.mkVirtualEnv "${thisProjectAsNixPkg.pname}-env" workspace.deps.default).overrideAttrs(old: {
-    inherit venvIgnoreCollisions;
-  });
+  pythonEnv =
+    (pythonSet.mkVirtualEnv "${thisProjectAsNixPkg.pname}-env" workspace.deps.default).overrideAttrs
+      (old: {
+        inherit venvIgnoreCollisions;
+      });
 in
 stdenv.mkDerivation {
   inherit (thisProjectAsNixPkg) pname version;
