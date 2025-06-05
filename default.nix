@@ -14,9 +14,9 @@
   modules = import ./modules; # NixOS modules
   overlays = import ./overlays; # nixpkgs overlays
 
-  cloudflare-ddns = pkgs.callPackage ./pkgs/cloudflare-ddns { };
-  nh = pkgs.callPackage ./pkgs/nh { };
-  rename_music = pkgs.callPackage ./pkgs/rename_music { };
+  byparr = pkgs.callPackage ./pkgs/byparr.nix { };
+  nh = pkgs.callPackage ./pkgs/nh.nix { };
+  rename_music = pkgs.callPackage ./pkgs/rename_music.nix { };
   catppuccin-papirus-folders-frappe-red = pkgs.catppuccin-papirus-folders.override {
     flavor = "frappe";
     accent = "red";
