@@ -4,6 +4,15 @@
   stdenv,
   fetchFromGitHub,
 }:
+let
+  toyvo = {
+    name = "Collin Diekvoss";
+    email = "Collin@Diekvoss.com";
+    matrix = "@toyvo:matrix.org";
+    github = "ToyVo";
+    githubId = 5168912;
+  };
+in
 stdenv.mkDerivation {
   pname = "libpcpnatpmp";
   version = "20250416";
