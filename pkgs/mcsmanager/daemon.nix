@@ -50,7 +50,10 @@ stdenv.mkDerivation rec {
     description = "MCSManager daemon - manages game server instances";
     homepage = "https://mcsmanager.com/";
     license = licenses.asl20;
-    platforms = [ "x86_64-linux" "aarch64-linux" ];
+    platforms = [
+      "x86_64-linux"
+      "aarch64-linux"
+    ];
     maintainers = with maintainers; [ toyvo ];
   };
 }

@@ -46,6 +46,7 @@ The function uses a fixed-point combinator (`fix`) so packages within this repo 
 ### Library (`lib/default.nix`)
 
 Key functions:
+
 - `callDirPackageWithRecursive` — auto-discovers and builds all `package.nix` files in a directory tree
 - `importDirRecursive` — imports all `.nix` files in a directory, used for overlays and modules
 - `isBuildable` — checks a package isn't broken and has free licenses

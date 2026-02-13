@@ -8,11 +8,12 @@
 
 **Tech Stack:** Nix, NixOS modules, stdenv.mkDerivation, fetchurl, autoPatchelfHook, systemd
 
----
+______________________________________________________________________
 
 ### Task 1: Create mcsmanager-web derivation
 
 **Files:**
+
 - Create: `pkgs/mcsmanager/web.nix`
 
 **Step 1: Write web.nix**
@@ -72,11 +73,12 @@ git add pkgs/mcsmanager/web.nix
 git commit -m "feat: add mcsmanager-web derivation"
 ```
 
----
+______________________________________________________________________
 
 ### Task 2: Create mcsmanager-daemon derivation
 
 **Files:**
+
 - Create: `pkgs/mcsmanager/daemon.nix`
 
 The daemon tarball contains native `.node` modules (cpu-features, ssh2) and native binaries in `lib/` (pty, file_zip, 7z). These are prebuilt ELF binaries that need `autoPatchelfHook` to work on NixOS. The tarball includes binaries for all platforms — we only keep the Linux ones for the current architecture.
@@ -159,11 +161,12 @@ git add pkgs/mcsmanager/daemon.nix
 git commit -m "feat: add mcsmanager-daemon derivation"
 ```
 
----
+______________________________________________________________________
 
 ### Task 3: Create package.nix entry point
 
 **Files:**
+
 - Create: `pkgs/mcsmanager/package.nix`
 
 This is the auto-discovered entry point. It exposes both sub-packages with `recurseForDerivations` so they appear in `nix flake show` and CI checks.
@@ -195,11 +198,12 @@ git add pkgs/mcsmanager/package.nix
 git commit -m "feat: add mcsmanager package entry point"
 ```
 
----
+______________________________________________________________________
 
 ### Task 4: Create NixOS module
 
 **Files:**
+
 - Create: `modules/nixos/mcsmanager/default.nix`
 
 The module defines two independent services. Each creates a systemd service with an `ExecStartPre` script that symlinks Nix store package contents into the mutable working directory.
@@ -376,7 +380,7 @@ git add modules/nixos/mcsmanager/default.nix
 git commit -m "feat: add MCSManager NixOS module"
 ```
 
----
+______________________________________________________________________
 
 ### Task 5: Validate and iterate
 
