@@ -6,9 +6,9 @@ Package MCSManager (a distributed game server management panel) as Nix derivatio
 
 ## Approach: Prebuilt Release Tarballs
 
-MCSManager publishes prebuilt release tarballs on GitHub containing webpack/vite-compiled JS bundles and production `package.json`/`package-lock.json` files. We fetch these and use `buildNpmPackage` to install production `node_modules` for each component. This avoids fighting the monorepo's `file:../common` workspace references during build.
+MCSManager publishes prebuilt release tarballs on GitHub containing webpack/vite-compiled JS bundles with `node_modules` already installed. We fetch these with `fetchurl` and use `stdenv.mkDerivation` to install the files. The daemon tarball also includes native binaries (pty, zip tools, 7z) for all platforms — we only install the Linux ones.
 
-Native binaries (pty, zip tools, 7z) are fetched separately from their GitHub release repos and symlinked into the daemon's `lib/` directory.
+The daemon tarball contains 2 native `.node` modules (cpu-features, ssh2 crypto) that need `autoPatchelfHook` to work on NixOS.
 
 ## Package Derivations
 
@@ -17,18 +17,13 @@ Three derivations under `pkgs/mcsmanager/`:
 ### mcsmanager-daemon (daemon.nix)
 
 - Fetches `mcsmanager_linux_daemon_only_release.tar.gz` from GitHub releases
-- Uses `buildNpmPackage` to install production node_modules
-- Fetches platform-appropriate native binaries:
-  - `pty_linux_{arch}` from MCSManager/PTY
-  - `file_zip_linux_{arch}` from MCSManager/Zip-Tools
-  - `7z_linux_{arch}` from MCSManager/Zip-Tools
-- Installs: `app.js`, `app.js.map`, `node_modules/`, `lib/` (native binaries)
-- Also includes `languages/` directory from source repo
+- Uses `stdenv.mkDerivation` + `autoPatchelfHook` (native .node modules need patching)
+- Installs: `app.js`, `app.js.map`, `node_modules/`, `lib/` (platform-filtered native binaries)
 
 ### mcsmanager-web (web.nix)
 
 - Fetches `mcsmanager_linux_web_only_release.tar.gz` from GitHub releases
-- Uses `buildNpmPackage` to install production node_modules
+- Uses `stdenv.mkDerivation` (no native modules)
 - Installs: `app.js`, `app.js.map`, `node_modules/`, `public/` (frontend assets)
 
 ### mcsmanager (package.nix)
@@ -77,10 +72,7 @@ Both processes use `process.cwd()` to find files. The working directory (dataDir
 app.js           -> /nix/store/.../app.js
 app.js.map       -> /nix/store/.../app.js.map
 node_modules     -> /nix/store/.../node_modules
-lib/pty_linux_*  -> /nix/store/...
-lib/file_zip_*   -> /nix/store/...
-lib/7z_*         -> /nix/store/...
-language         -> /nix/store/.../languages
+lib/             -> /nix/store/.../lib  (platform-filtered native binaries)
 data/            (mutable)
 logs/            (mutable)
 ```
