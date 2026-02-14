@@ -30,6 +30,14 @@ stdenv.mkDerivation rec {
     homepage = "https://mcsmanager.com/";
     license = licenses.asl20;
     platforms = platforms.linux;
-    maintainers = with maintainers; [ toyvo ];
+    maintainers = [
+      {
+        name = "Collin Diekvoss";
+        email = "Collin@Diekvoss.com";
+        matrix = "@toyvo:matrix.org";
+        github = "ToyVo";
+        githubId = 5168912;
+      }
+    ];
   };
 }
